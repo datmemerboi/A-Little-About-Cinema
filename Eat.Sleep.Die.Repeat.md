@@ -1,6 +1,6 @@
 Eat. Sleep. Die. Repeat.
 =
-## **Groundhog Day** (1993), **Happy Death Day** (2017) & **Game Over** (2019)
+## *Groundhog Day (1993)*, *Happy Death Day (2017)* & *Game Over (2019)*
 
 When Groundhog Day released in 1993, it was appreciated by both fans and film critics as well. A film about a self-absorbed, egoistic news reporter stuck in the same day until he finds better manners and true love caught the attention of many. The film as a whole convinced people because of it’s humour and the character arc of Phil. Since then, the concept of a Time Loop has been implemented various number of times (Dormamu didn’t get a great bargain…)
 
