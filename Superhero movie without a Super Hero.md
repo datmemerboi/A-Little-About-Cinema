@@ -25,4 +25,4 @@ But even that had a "Save the girl" motif, which too has become a common thread.
 ![](https://raw.githubusercontent.com/datmemerboi/A-Little-About-Cinema/master/Posters/Mard%20Ko%20Dard%20Nahi%20Hota%20(2019).png)
 
 >**Mugamoodi (2012)**
-![](https://occ-0-1068-92.1.nflxso.net/dnm/api/v6/0DW6CdE4gYtYx8iy3aj8gs9WtXE/AAAABb4oT6TlC1w52h_o2fW9oR9cmYmGeBfw_JWsQmoTVZQMSNPCmaJBfvuOSAPlLJIwKlkqGPp39Gei362axd4Ie5KExIDSGOU4dQ.jpg?r=724)
+![](https://static.moviecrow.com/gallery/20140410/20810-mugamoodi-movie-official-poster-22.jpg)
