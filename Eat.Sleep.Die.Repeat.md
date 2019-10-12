@@ -1,3 +1,4 @@
+
 Eat. Sleep. Die. Repeat.
 =
 ## *Groundhog Day (1993)*, *Happy Death Day (2017)* & *Game Over (2019)*
@@ -8,15 +9,13 @@ But what if he doesn’t have enough time?
 
 What if he couldn’t go on and on with this time loop?
 
-**Happy Death Day (2017)**
-
-![Happy Death Day](https://raw.githubusercontent.com/datmemerboi/A-Little-About-Cinema/master/Posters/Happy%20Death%20Day%20(2017).png)
+>**Happy Death Day (2017)**
+![](https://raw.githubusercontent.com/datmemerboi/A-Little-About-Cinema/master/Posters/Happy%20Death%20Day%20(2017).png)
 
 A college student wakes up in a dorm room, on her birthday, just to get murdered few hours later. This is the plotline of **Happy Death Day** (2017). Unlike Phil, Tree cannot stay in this loop forever. The main reason being, each death has a toll on her body.
 
-**Game Over (2019)**
-
-![Game Over](https://raw.githubusercontent.com/datmemerboi/A-Little-About-Cinema/master/Posters/Game%20Over%20(2019).jpg)
+> **Game Over (2019)**
+![](https://raw.githubusercontent.com/datmemerboi/A-Little-About-Cinema/master/Posters/Game%20Over%20(2019).jpg)
 
 On a New Year’s Eve, a game developer, Swapna, has win the game of her life. Sounds like a waffer thin plot, but this isn’t all that is packaged into **Game Over** (2019). This extremely intense thriller has such great detailing and layers, it practically grows on it’s own.
 
