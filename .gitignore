@@ -1,0 +1,17 @@
+# MISC FILES
+CamelWords.txt
+clean-words.py
+english-words-master.zip
+words_alpha.txt
+
+# SRC FOLDERS
+src/randID
+src/static/
+src/templates
+src/movie_content.txt
+src/post_movie_content.py
+src/smooth-scroll.html
+src/movies
+
+# VIRTUAL ENV
+env/
