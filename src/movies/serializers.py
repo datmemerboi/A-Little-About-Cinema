@@ -1,5 +1,6 @@
-from .models import Movie
 from rest_framework import serializers
+
+from .models import Movie
 
 class MovieSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -11,3 +12,8 @@ class QuickMovieSerializer(serializers.ModelSerializer):
 		model = Movie
 		fields = ('id', 'title', 'director', 'year')
 		read_only_fields = ['id']
+
+class MovieIDSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Movie
+		fields = ['id']
