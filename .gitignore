@@ -13,8 +13,9 @@ how-to-psql.md
 src/randID/
 src/static/
 src/templates/
-src/categories/
-src/movies/migrations/
+
+# MIGRATIONS
+src/*/migrations/
 
 # SRC FILES
 src/movie_content.txt
