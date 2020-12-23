@@ -10,7 +10,9 @@ class Movie(models.Model):
 	year = models.PositiveIntegerField()
 	language = models.CharField(max_length = 15)
 	short_title = models.CharField(max_length = 50, null = True, default = None)
-
+	cast = ArrayField(models.CharField(max_length = 100), null = True, default = list)
+	poster_url = models.CharField(max_length = 100, null = True, default = None)
+	
 	# Meta Data
 	status = models.SmallIntegerField(default = 0)
 	why_watch_it = models.TextField(null = True)
