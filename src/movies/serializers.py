@@ -12,8 +12,3 @@ class QuickMovieSerializer(serializers.ModelSerializer):
 		model = Movie
 		fields = ('id', 'title', 'director', 'year')
 		read_only_fields = ['id']
-
-class MovieIDSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Movie
-		fields = ['id']
