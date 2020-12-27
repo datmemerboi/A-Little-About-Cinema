@@ -11,7 +11,7 @@ class Movie(models.Model):
 	language = models.CharField(max_length = 15)
 	short_title = models.CharField(max_length = 50, null = True, default = None)
 	cast = ArrayField(models.CharField(max_length = 100), null = True, default = list)
-	poster_url = models.CharField(max_length = 100, null = True, default = None)
+	poster_url = models.TextField(null = True, default = None)
 	
 	# Meta Data
 	status = models.SmallIntegerField(default = 0)
