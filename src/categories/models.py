@@ -1,6 +1,3 @@
-import json
-import datetime
-
 from django.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
 
@@ -18,11 +15,3 @@ class Category(models.Model):
 
 	def ClearMovieList(self):
 		self.movie_list = []
-
-	def SyncMeta(self):
-		doc = {
-			"number_of_movies": len(self.movie_list),
-			"last_sync": str(datetime.datetime.now().isoformat())+"Z"
-		}
-		self.meta = json.loads(json.dumps(doc))
-		print(self.meta)
