@@ -8,29 +8,9 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Movie
 from .serializers import MovieSerializer, QuickMovieSerializer
+from utils.filters import ApplyFiltersToQuery
 
-def ApplyFilterToQuery(query, filters):
-	if not filters or len(filters) < 1:
-		return query
-	for conditionKey, conditionVal in filters:
-		if conditionKey.lower() == 'language':
-			query = query.filter(language = str(conditionVal))
-		# Director filter
-		if conditionKey.lower() == 'director':
-			query = query.filter(director = str(conditionVal))
-		# Cast filter
-		if conditionKey.lower() == 'cast':
-			query = query.filter(cast__icontains = str(conditionVal))
-		# Year filter
-		if conditionKey.lower() == 'year':
-			query = query.filter(year = int(conditionVal))
-		# Keywords filter
-		if conditionKey.lower() == 'keyword':
-			for word in conditionVal:
-				query = query.filter(keyword__icontains = word)
-	return query
-
-class NewDocHandler(APIView):
+class CreateHandler(APIView):
 	permission_classes = [IsAuthenticated]
 	def MinimalRequirementCheck(self, record):
 		ID = "{} ({})".format(record['short_title'], record['year'])\
@@ -85,7 +65,7 @@ class NewDocHandler(APIView):
 			print("Exception\n{}".format(err))
 			return Response(status = 500)
 
-class RetrieveDocHandler(APIView):
+class RetrieveHandler(APIView):
 	def get(self, request):
 		if request.data.__class__.__name__ == 'QueryDict':
 			body = request.data.dict()
@@ -116,20 +96,52 @@ class RetrieveDocHandler(APIView):
 			print("Exception\n{}".format(err))
 			return Response(status = 500)
 
-class MovieViewHandler(APIView):
+class ViewHandler(APIView):
 	def get(self, request):
+		try:
+			quick = True\
+				if request.query_params.get('quick')\
+				and request.query_params.get('quick').lower() in ['true', '1']\
+				else False
+			limit = int(request.query_params.get('limit')) if request.query_params.get('limit') else None
+			recommended = True\
+				if request.query_params.get('recommended')\
+				and request.query_params.get('recommended').lower() in ['true', '1']\
+				else False
+			watchable = True\
+				if request.query_params.get('watchable')\
+				and request.query_params.get('watchable').lower() in ['true', '1']\
+				else False
+
+			query = Movie.objects.all().order_by('-created_at')
+
+			if watchable:
+				query = query.filter(status__gte = 0)
+			if recommended:
+				query = query.filter(status__gt = 0)
+			if limit:
+				query = query[:limit]
+			if quick:
+				serializer = QuickMovieSerializer(query, many = True)
+			else:
+				serializer = MovieSerializer(query, many = True)
+			return Response(serializer.data)
+
+		except Exception as err:
+			print("Exception\n{}".format(err))
+			return Response(status = 500)
+
+	def post(self, request):
 		if type(request.data).__name__ == 'QueryDict':
 			body = request.data.dict()
 		else:
 			body = request.data
 		try:
-			quick = bool(request.query_params.get('quick')) if request.query_params.get('quick') else None
-			limit = int(request.query_params.get('limit')) if request.query_params.get('limit') else None
-
-			queryset = ApplyFilterToQuery(Movie.objects.all().order_by('-created_at'), body['filter'])\
-				if 'filter' in body\
-				else Movie.objects.all().order_by('-created_at')
-
+			quick = bool(body['quick']) if 'quick' in body else False
+			limit = int(body['limit']) if 'limit' in body else None
+			filters = body['filters'] if 'filters' in body else None
+			queryset = ApplyFiltersToQuery(Movie.objects.all().order_by('-created_at'), filters)
+			
 			if limit:
 				queryset = queryset[:limit]
 			if quick:
