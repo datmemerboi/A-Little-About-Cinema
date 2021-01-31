@@ -1,0 +1,1 @@
+web: gunicorn alac.wsgi --log-file -
