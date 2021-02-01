@@ -13,7 +13,6 @@ how-to-psql.md
 src/
 
 # MIGRATIONS
-*/migrations/
 
 # ENVIRONMENT
 env/
