@@ -10,17 +10,10 @@ how-to-psql.md
 *__pycache__
 
 # SRC FOLDERS
-src/randID/
-src/static/
-src/templates/
+src/
 
 # MIGRATIONS
-src/*/migrations/
-
-# SRC FILES
-src/movie_content.txt
-src/post_movie_content.py
-src/smooth-scroll.html
+*/migrations/
 
 # ENVIRONMENT
 env/
