@@ -1,1 +1,1 @@
-web: gunicorn alac.wsgi
+web: gunicorn src.alac.wsgi
