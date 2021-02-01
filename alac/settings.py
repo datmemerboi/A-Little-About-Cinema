@@ -8,7 +8,7 @@ SECRET_KEY = config('SECRET_KEY', default = "NOT_A_SECRET_KEY_SH", cast = str)
 
 DEBUG = config('DEBUG', default = False, cast = bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default = "*", cast = lambda all: [host for host in all.split(',')])
 
 
 # Application definition
