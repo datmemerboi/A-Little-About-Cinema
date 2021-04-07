@@ -65,11 +65,6 @@ def SingleCondition(query, key, opr, val):
 	elif key == "keywords":
 		return KeywordFilters(query, opr, val)
 
-def MultiCondition(query, conditions):
-	for con in conditions:
-		query = SingleCondition(query, con['key'], con['operator'], con['value'])
-	return query
-
 def ApplyFiltersToQuery(query, filters):
 	print(dict(filters))
 	if not filters:
