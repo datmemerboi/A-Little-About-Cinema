@@ -13,27 +13,31 @@ from .helper import ExtractMeta
 
 class CreateHandler(APIView):
 	permission_classes = [IsAuthenticated]
+
 	def MinimalRequirementCheck(self, record):
 		if not {'name', 'conditions'}.issubset(record): # required fields of a category record
+			return False
+		if not issubset(record['name'], str) or not issubset(record['conditions'], dict): # Type check
 			return False
 		for con in record['conditions']:
 			if not {'key', 'operator', 'value'}.issubset(con): # required keys of condition object
 				return False
 			key = con['key']
 			opr = con['operator']
-			if key in ['keywords', 'cast'] and opr.lower() == "is": # keywords/cast must have "contains", not "is"
+			if key in ['keywords', 'cast', 'director'] and (opr.lower() == "is" or opr.lower() == "equals"):
+			# keywords/cast/director key must have in/contains operator, not is/equals
 				return False
 		return not Category.objects.filter(name = record['name']).exists()
 
 	def post(self, request):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, 'QueryDict'):
 			body = request.data.dict()
 		else:
 			body = request.data
 		try:
 			if 'name' not in body or 'conditions' not in body:
 				return Response(status = 400)
-			if type(body['conditions']).__name__ != "list" or len(body['conditions']) < 1:
+			if not isinstance(body['conditions'], list) or len(body['conditions']) < 1:
 				return Response(status = 400)
 			if self.MinimalRequirementCheck(body):
 				Category.objects.create(**body)
@@ -50,7 +54,7 @@ class CreateHandler(APIView):
 
 class RetrieveHandler(APIView):
 	def get(self, request):
-		if type(request.data).__name__ == 'QueryDict':
+		if isinstance(request.data, 'QueryDict'):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -61,7 +65,7 @@ class RetrieveHandler(APIView):
 				if 'id' in body\
 				else None
 			if ID:
-				if type(ID).__name__ == 'list':
+				if isinstance(ID, list):
 					queryset = Category.objects.filter(id__in = ID)
 					serializer = CategorySerializer(queryset, many = True)
 				else:
@@ -108,7 +112,7 @@ class ViewHandler(APIView):
 			return Response(status = 500)
 
 	def post(self, request):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, 'QueryDict'):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -135,6 +139,7 @@ class ViewHandler(APIView):
 
 class ResyncHandler(APIView):
 	permission_classes = [IsAuthenticated]
+
 	def SyncByID(self, ID):
 		record = CategorySerializer(Category.objects.get(id = ID)).data
 		# Get the conditions
@@ -153,7 +158,7 @@ class ResyncHandler(APIView):
 		return 
 
 	def put(self, request):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, 'QueryDict'):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -164,7 +169,7 @@ class ResyncHandler(APIView):
 				if 'id' in body\
 				else None
 			if ID:
-				if type(ID).__name__ == 'list':
+				if isinstance(ID, list):
 					return Response(status = 400)
 				else:
 					self.SyncByID(ID)
@@ -181,8 +186,9 @@ class ResyncHandler(APIView):
 
 class ClearListHandler(APIView):
 	permission_classes = [IsAuthenticated]
+
 	def put(self, request):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, 'QueryDict'):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -211,7 +217,7 @@ class UpdateHandler(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def put(self, request):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, 'QueryDict'):
 			body = request.data.dict()
 		else:
 			body = request.data

@@ -1,5 +1,6 @@
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
+from django.http.request import QueryDict
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,25 +13,39 @@ from utils.filters import ApplyFiltersToQuery
 
 class CreateHandler(APIView):
 	permission_classes = [IsAuthenticated]
+
 	def MinimalRequirementCheck(self, record):
 		ID = "{} ({})".format(record['short_title'], record['year'])\
 			if 'short_title' in record\
 			else "{} ({})".format(record['title'], record['year'])
 
-		return {'title', 'director', 'year', 'language'}.issubset(record) and not Movie.objects.filter(id = ID).exists()
+		if Movie.objects.filter(id = ID).exists(): # Movie object with this ID already exists
+			return False
+		if not {'title', 'director', 'year', 'language'}.issubset(record): # required fields of a movie record
+			return False
+		
+		# Type check
+		if not isinstance(record['title'], str) or\
+			not isinstance(record['year'], int) or\
+			not isinstance(record['language'], str) or\
+			(not isinstance(record['director'], str) and not isinstance(record['director'], list)):
+			return False
+		return True
 
 	def CreateMovieRecord(self, record):
 		ID = "{} ({})".format(record['short_title'], record['year'])\
 			if 'short_title' in record\
 			else "{} ({})".format(record['title'], record['year'])
 		
+		if isinstance(record['director'], str):
+			record['director'] = [record['director']]
 		validator = MovieSerializer(data = { 'id': ID, **record })
 		if validator.is_valid(raise_exception = True):
 			Movie.objects.create(**validator.validated_data)
 		return
 
 	def post(self, request, format = None):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, QueryDict):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -61,13 +76,12 @@ class CreateHandler(APIView):
 			return Response(status = 409)
 
 		except Exception as err:
-			print(type(err).__name__)
 			print("Exception\n{}".format(err))
 			return Response(status = 500)
 
 class RetrieveHandler(APIView):
 	def get(self, request):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, QueryDict):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -78,7 +92,7 @@ class RetrieveHandler(APIView):
 				if 'id' in body\
 				else None
 			if ID:
-				if type(ID).__name__ == 'list':
+				if isinstance(ID, list):
 					queryset = Movie.objects.filter(id__in = ID)
 					serializer = MovieSerializer(queryset, many = True)
 				else:
@@ -132,7 +146,7 @@ class ViewHandler(APIView):
 			return Response(status = 500)
 
 	def post(self, request):
-		if type(request.data).__name__ == 'QueryDict':
+		if isinstance(request.data, QueryDict):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -156,8 +170,9 @@ class ViewHandler(APIView):
 
 class UpdateHandler(APIView):
 	permission_classes = [IsAuthenticated]
+
 	def put(self, request):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, QueryDict):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -167,6 +182,10 @@ class UpdateHandler(APIView):
 				else body['id']\
 				if 'id' in body\
 				else None
+
+			if 'director' in body and isinstance(body['director'], str):
+				body['director'] = [body['director']]
+
 			if ID:
 				Movie.objects.filter(id = ID).update(**body)
 				return Response(status = 200)
@@ -179,8 +198,9 @@ class UpdateHandler(APIView):
 
 class DeleteHandler(APIView):
 	permission_classes = [IsAuthenticated]
+
 	def delete(self, request):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, QueryDict):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -202,6 +222,7 @@ class DeleteHandler(APIView):
 
 class TruncateHandler(APIView):
 	permission_classes = [IsAuthenticated]
+
 	def delete(self, request):
 		try:
 			Movie.objects.all().delete()
