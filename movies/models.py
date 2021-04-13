@@ -6,7 +6,7 @@ class Movie(models.Model):
 	
 	# Movie Data
 	title = models.CharField(max_length = 200)
-	director = models.CharField(max_length = 100)
+	director = ArrayField(models.CharField(max_length = 100))
 	year = models.PositiveIntegerField()
 	language = models.CharField(max_length = 15)
 	short_title = models.CharField(max_length = 50, null = True, default = None)
@@ -21,3 +21,30 @@ class Movie(models.Model):
 
 	def PushKeyword(self, keyword):
 		self.keywords.append(keyword)
+	'''
+	{
+		"id": "Inglourious Basterds (2009)",
+		"title": "Inglourious Basterds",
+		"director": [
+			"Quentin Tarantino"
+		],
+		"year": 2009,
+		"language": "English",
+		"short_title": null,
+		"cast": [
+			"Brad Pitt",
+			"Christoph Waltz",
+			"Melanie Laurent"
+		],
+		"poster_url": null,
+		"status": 2,
+		"why_watch_it": "- Possibly the best WW2 movie - Christoph Waltz won an Oscar for Best Supporting Actor",
+		"keywords": [
+			"war",
+			"action",
+			"funny",
+			"violent"
+		],
+		"created_at": "2021-04-13T15:54:14.657173Z"
+	}
+	'''
