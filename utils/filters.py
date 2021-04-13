@@ -1,12 +1,17 @@
+from functools import reduce
+from django.db.models import Q
+
 def DirectorFilters(query, opr, val):
-	if opr == "is" or opr == "equals":
-		return query.filter(director = val)
-	elif opr == "in" or opr == "contains":
-		return query.filter(director__in = val)
-	elif opr == "is not" or opr == "not equal":
-		return query.filter(director__ne = val)
+	if opr == "in" or opr == "contains":
+		if isinstance(val, list):
+			return query.filter(reduce(lambda x,y: x | y, [Q(director__icontains = name) for name in val]))
+		else:
+			return query.filter(director__icontains=val)
 	elif opr == "not in" or opr == "not contain":
-		return query.exclude(director__in = val)
+		if isinstance(val, list):
+			return query.exclude(reduce(lambda x,y: x | y, [Q(director__icontains = name) for name in val]))
+		else:
+			return query.exclude(director__icontains = val)
 	return query
 
 def LanguageFilters(query, opr, val):
@@ -15,7 +20,7 @@ def LanguageFilters(query, opr, val):
 	elif opr == "in" or opr == "contains":
 		return query.filter(language__in = val)
 	elif opr == "is not" or opr == "not equal":
-		return query.filter(language__ne = val)
+		return query.exclude(language = val)
 	elif opr == "not in" or opr == "not contain":
 		return query.exclude(language__in = val)
 	return query
@@ -66,7 +71,6 @@ def SingleCondition(query, key, opr, val):
 		return KeywordFilters(query, opr, val)
 
 def ApplyFiltersToQuery(query, filters):
-	print(dict(filters))
 	if not filters:
 		return query
 	for key, val in filters.items():
@@ -77,7 +81,7 @@ def ApplyFiltersToQuery(query, filters):
 		elif key.lower() == 'language':
 			query = query.filter(language = val)
 		elif key.lower() == 'director':
-			query = query.filter(director = val)
+			query = query.filter(director__icontains = val)
 		elif key.lower() == 'cast':
 			query = query.filter(cast__icontains = val)
 		elif key.lower() == 'year':
