@@ -22,19 +22,19 @@ class Category(models.Model):
 		"description": null,
 		"conditions": [
 			{
-			"key": "director",
-			"value": "Quentin Tarantino",
-			"operator": "is"
+				"key": "director",
+				"operator": "in",
+				"value": "Quentin Tarantino"
 			}
 		],
 		"movie_list": [],
 		"meta": {
 			"years": [],
 			"languages": [],
-			"last_sync": "2021-04-07T12:39:43.816890Z",
+			"last_sync": "2021-04-13T15:56:14.652173Z",
 			"recommended": 0,
 			"number_of_docs": 0
 		},
-		"created_at": "2021-04-07T11:40:18.096530Z"
+		"created_at": "2021-04-13T15:56:14.652173Z"
 	}
 	'''
