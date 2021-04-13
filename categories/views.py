@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -8,28 +6,38 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from movies.models import Movie
-from movies.serializers import QuickMovieSerializer
-from utils.filters import SingleCondition, MultiCondition
+from utils.filters import SingleCondition
 from .models import Category
 from .serializers import CategorySerializer, QuickCategorySerializer, MetaCategorySerializer
+from .helper import ExtractMeta
 
 class CreateHandler(APIView):
 	permission_classes = [IsAuthenticated]
+
 	def MinimalRequirementCheck(self, record):
-		if not {'name', 'condition'}.issubset(record):
+		if not {'name', 'conditions'}.issubset(record): # required fields of a category record
 			return False
-		key = record['condition']['key']; opr = record['condition']['operator']
-		if key in ['keywords', 'cast'] and opr.lower() == "is":
+		if not issubset(record['name'], str) or not issubset(record['conditions'], dict): # Type check
 			return False
+		for con in record['conditions']:
+			if not {'key', 'operator', 'value'}.issubset(con): # required keys of condition object
+				return False
+			key = con['key']
+			opr = con['operator']
+			if key in ['keywords', 'cast', 'director'] and (opr.lower() == "is" or opr.lower() == "equals"):
+			# keywords/cast/director key must have in/contains operator, not is/equals
+				return False
 		return not Category.objects.filter(name = record['name']).exists()
 
 	def post(self, request):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, 'QueryDict'):
 			body = request.data.dict()
 		else:
 			body = request.data
 		try:
-			if 'name' not in body or 'condition' not in body:
+			if 'name' not in body or 'conditions' not in body:
+				return Response(status = 400)
+			if not isinstance(body['conditions'], list) or len(body['conditions']) < 1:
 				return Response(status = 400)
 			if self.MinimalRequirementCheck(body):
 				Category.objects.create(**body)
@@ -46,7 +54,7 @@ class CreateHandler(APIView):
 
 class RetrieveHandler(APIView):
 	def get(self, request):
-		if type(request.data).__name__ == 'QueryDict':
+		if isinstance(request.data, 'QueryDict'):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -57,7 +65,7 @@ class RetrieveHandler(APIView):
 				if 'id' in body\
 				else None
 			if ID:
-				if type(ID).__name__ == 'list':
+				if isinstance(ID, list):
 					queryset = Category.objects.filter(id__in = ID)
 					serializer = CategorySerializer(queryset, many = True)
 				else:
@@ -104,7 +112,7 @@ class ViewHandler(APIView):
 			return Response(status = 500)
 
 	def post(self, request):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, 'QueryDict'):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -131,91 +139,26 @@ class ViewHandler(APIView):
 
 class ResyncHandler(APIView):
 	permission_classes = [IsAuthenticated]
-	def ExtractStatsFromList(self, idList, condition):
-		if type(condition).__name__ == "list":
-			# Stats for multiple conditions
-			return {
-				"last_sync": str(datetime.now().isoformat()) + "Z",
-				"number_of_docs": len(idList)
-			}
-		else:
-			key = condition['key']
-			meta = {}
-			if key == 'director':
-				# Language, Year, Status stats
-				meta = { 'languages': {}, 'years': {}, 'recommended': 0 }
-				for ID in idList:
-					data = dict(QuickMovieSerializer(Movie.objects.get(id = ID)).data)
-					if data['language'] in meta['languages']:
-						meta['languages'][data['language']] += 1
-					else:
-						meta['languages'][data['language']] = 1
-					if data['year'] in meta['years']:
-						meta['years'][data['year']] += 1
-					else:
-						meta['years'][data['year']] = 1
-					if 'status' in data and data['status'] > 0:
-						meta['recommended'] += 1
-
-			elif key == 'year':
-				# Director, Language, Status stats
-				meta = { 'directors': {}, 'languages': {}, 'recommended': 0 }
-				for ID in idList:
-					data = dict(QuickMovieSerializer(Movie.objects.get(id = ID)).data)
-					if data['language'] in meta['languages']:
-						meta['languages'][data['language']] += 1
-					else:
-						meta['languages'][data['language']] = 1
-					if data['director'] in meta['directors']:
-						meta['directors'][data['director']] += 1
-					else:
-						meta['directors'][data['director']] = 1
-					if 'status' in data and data['status'] > 0:
-						meta['recommended'] += 1
-
-			elif key == 'language':
-				# Director, Year, Status stats
-				meta = { 'directors': {}, 'years': {}, 'recommended': 0 }
-				for ID in idList:
-					data = dict(QuickMovieSerializer(Movie.objects.get(id = ID)).data)
-					if data['director'] in meta['directors']:
-						meta['directors'][data['director']] += 1
-					else:
-						meta['directors'][data['director']] = 1
-					if data['year'] in meta['years']:
-						meta['years'][data['year']] += 1
-					else:
-						meta['years'][data['year']] = 1
-					if 'status' in data and data['status'] > -1:
-						meta['recommended'] += 1
-			meta = {
-				"last_sync": str(datetime.now().isoformat()) + "Z",
-				"number_of_docs": len(idList),
-				**meta
-			}
-			return meta
 
 	def SyncByID(self, ID):
 		record = CategorySerializer(Category.objects.get(id = ID)).data
-		# Get the condition
-		condition = record['condition']
+		# Get the conditions
+		conditions = record['conditions']
 		query = Movie.objects
 
-		if type(condition).__name__ == "list":
-			query = MultiCondition(query, condition)
-		else:
-			query = SingleCondition(query, condition['key'], condition['operator'], condition['value'])
-		
+		for con in conditions:
+			query = SingleCondition(query, con['key'], con['operator'], con['value'])
+
 		data = list(query.values_list('id', flat = True))
 		doc = {
 			"movie_list": data,
-			"meta": self.ExtractStatsFromList(data, condition)
+			"meta": ExtractMeta(data, conditions)
 		}
 		Category.objects.update_or_create(id = ID, defaults = doc)
 		return 
 
 	def put(self, request):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, 'QueryDict'):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -226,8 +169,8 @@ class ResyncHandler(APIView):
 				if 'id' in body\
 				else None
 			if ID:
-				if type(ID).__name__ == 'list':
-					return Response(status = 202)
+				if isinstance(ID, list):
+					return Response(status = 400)
 				else:
 					self.SyncByID(ID)
 					return Response(status = 200)
@@ -243,8 +186,9 @@ class ResyncHandler(APIView):
 
 class ClearListHandler(APIView):
 	permission_classes = [IsAuthenticated]
+
 	def put(self, request):
-		if request.data.__class__.__name__ == 'QueryDict':
+		if isinstance(request.data, 'QueryDict'):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -264,6 +208,32 @@ class ClearListHandler(APIView):
 
 		except ObjectDoesNotExist:
 			return Response(status = 404)
+
+		except Exception as err:
+			print("Exception\n{}".format(err))
+			return Response(status = 500)
+
+class UpdateHandler(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def put(self, request):
+		if isinstance(request.data, 'QueryDict'):
+			body = request.data.dict()
+		else:
+			body = request.data
+		try:
+			if not body:
+				return Response(status = 400)
+			ID = request.query_params.get('id')\
+				if request.query_params.get('id')\
+				else body['id']\
+				if 'id' in body\
+				else None
+			if ID:
+				Category.objects.update_or_create(id = ID, defaults = body)
+				return Response(status = 200)
+			else:
+				return Response(status = 400)
 
 		except Exception as err:
 			print("Exception\n{}".format(err))
