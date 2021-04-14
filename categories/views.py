@@ -1,5 +1,6 @@
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
+from django.http.request import QueryDict
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -17,7 +18,7 @@ class CreateHandler(APIView):
 	def MinimalRequirementCheck(self, record):
 		if not {'name', 'conditions'}.issubset(record): # required fields of a category record
 			return False
-		if not issubset(record['name'], str) or not issubset(record['conditions'], dict): # Type check
+		if not isinstance(record['name'], str) or not isinstance(record['conditions'], list): # Type check
 			return False
 		for con in record['conditions']:
 			if not {'key', 'operator', 'value'}.issubset(con): # required keys of condition object
@@ -30,7 +31,7 @@ class CreateHandler(APIView):
 		return not Category.objects.filter(name = record['name']).exists()
 
 	def post(self, request):
-		if isinstance(request.data, 'QueryDict'):
+		if isinstance(request.data, QueryDict):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -54,7 +55,7 @@ class CreateHandler(APIView):
 
 class RetrieveHandler(APIView):
 	def get(self, request):
-		if isinstance(request.data, 'QueryDict'):
+		if isinstance(request.data, QueryDict):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -112,7 +113,7 @@ class ViewHandler(APIView):
 			return Response(status = 500)
 
 	def post(self, request):
-		if isinstance(request.data, 'QueryDict'):
+		if isinstance(request.data, QueryDict):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -158,7 +159,7 @@ class ResyncHandler(APIView):
 		return 
 
 	def put(self, request):
-		if isinstance(request.data, 'QueryDict'):
+		if isinstance(request.data, QueryDict):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -188,7 +189,7 @@ class ClearListHandler(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def put(self, request):
-		if isinstance(request.data, 'QueryDict'):
+		if isinstance(request.data, QueryDict):
 			body = request.data.dict()
 		else:
 			body = request.data
@@ -217,7 +218,7 @@ class UpdateHandler(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def put(self, request):
-		if isinstance(request.data, 'QueryDict'):
+		if isinstance(request.data, QueryDict):
 			body = request.data.dict()
 		else:
 			body = request.data
