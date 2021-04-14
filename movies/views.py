@@ -86,19 +86,40 @@ class RetrieveHandler(APIView):
 		else:
 			body = request.data
 		try:
-			ID = request.query_params.get('id')\
-				if request.query_params.get('id')\
-				else body['id']\
-				if 'id' in body\
-				else None
+			ID = request.query_params.get('id') if request.query_params.get('id') else None
 			if ID:
-				if isinstance(ID, list):
-					queryset = Movie.objects.filter(id__in = ID)
-					serializer = MovieSerializer(queryset, many = True)
+				if not isinstance(ID, str):
+					return Response(status = 400)
 				else:
 					queryset = Movie.objects.get(id = ID)
 					serializer = MovieSerializer(queryset)
-				return Response(serializer.data)
+					return Response(serializer.data)
+			else:
+				return Response(status = 400)
+
+		except ObjectDoesNotExist:
+			print("Data not found")
+			return Response(status = 404)
+
+		except Exception as err:
+			print("Exception\n{}".format(err))
+			return Response(status = 500)
+
+	def post(self, request):
+		if isinstance(request.data, QueryDict):
+			body = request.data.dict()
+		else:
+			body = request.data
+		try:
+			ID = body['id'] if 'id' in body else None
+			if ID:
+				if isinstance(ID, list):
+					queryset = Movie.objects.filter(id__in = ID)
+					data = [MovieSerializer(qs).data for qs in queryset]
+				else:
+					queryset = Movie.objects.get(id = ID)
+					data = MovieSerializer(queryset).data
+				return Response(data)
 			else:
 				return Response(status = 400)
 
