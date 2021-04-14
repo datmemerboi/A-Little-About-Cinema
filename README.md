@@ -55,11 +55,10 @@ Note down this token, you will require to add it as **Authentication token** hea
 
 ## First Run
 Start the django server by running the command
+
 ```python manage.py runserver```
 
-and voila, your server will run at port 8000.
-
-For a specific port, run the above command as ` runserver <PORT>`
+and voila, your server will run at port 8000. For a specific port, run the above command as ` runserver <PORT>`
 
 ## API
 To understand the modules & endpoints, try going through the [API documentation](https://github.com/datmemerboi/A-Little-About-Cinema/blob/main/API%20Documentation.md)
