@@ -21,7 +21,8 @@ Response:
 <details><summary>Sample</summary>
 <pre>
 curl --location --request GET 'localhost:9090'
-
+</pre>
+<pre>
 {
 	"healthy": true,
 	"movies": {
@@ -72,7 +73,7 @@ Response: Status 201
 <details><summary>Sample</summary>
 <pre>
 curl --location --request POST 'localhost:9090/movie/new/' \
---header 'Authorization: Token YOUR_AUTH_TOKEN' \
+--header 'Authorization: Token <YOUR_AUTH_TOKEN>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "title": "Inglourious Basterds",
@@ -93,8 +94,8 @@ curl --location --request POST 'localhost:9090/movie/new/' \
         "violent"
     ]
 }'
-
-
+</pre>
+<pre>
 201 Created
 </pre>
 </details>
@@ -131,7 +132,7 @@ Response: Status 201
 <details><summary>Sample</summary>
 <pre>
 curl --location --request POST 'localhost:9090/movie/new/' \
---header 'Authorization: Token YOUR_AUTH_TOKEN' \
+--header 'Authorization: Token <YOUR_AUTH_TOKEN>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
 	records: [
@@ -156,7 +157,8 @@ curl --location --request POST 'localhost:9090/movie/new/' \
 		}
 	]
 }'
-
+</pre>
+<pre>
 201 Created
 </pre>
 </details>
@@ -193,7 +195,8 @@ Response:
 <details><summary>Sample</summary>
 <pre>
 curl --location --request GET 'localhost:9090/movie/all/'
-
+</pre>
+<pre>
 [
 	{
         "id": "Inglourious Basterds (2009)",
@@ -255,7 +258,8 @@ Response:
 <details><summary>Sample</summary>
 <pre>
 curl --location --request GET 'localhost:9090/movie/retrieve/?id=Inglourious%20Basterds%20(2009)'
-
+</pre>
+<pre>
 {
     "id": "Inglourious Basterds (2009)",
     "title": "Inglourious Basterds",
@@ -322,7 +326,8 @@ curl --location --request POST 'localhost:9090/movie/retrieve/' \
         "Inglourious Basterds (2009)"
     ]
 }'
-
+</pre>
+<pre>
 [
     {
         "id": "Inglourious Basterds (2009)",
@@ -383,7 +388,7 @@ Response: Status 200
 <details><summary>Sample</summary>
 <pre>
 curl --location --request PUT 'localhost:9090/movie/update/' \
---header 'Authorization: Token YOUR_AUTH_TOKEN' \
+--header 'Authorization: Token <YOUR_AUTH_TOKEN>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "id": "Inglourious Basterds (2009)",
@@ -406,7 +411,8 @@ curl --location --request PUT 'localhost:9090/movie/update/' \
         "violent"
     ]
 }'
-
+</pre>
+<pre>
 200 OK
 </pre>
 </details>
@@ -431,7 +437,10 @@ Response: Status 200
 <details><summary>Sample</summary>
 <pre>
 curl --location --request DELETE 'localhost:9090/movie/delete/?id=Inglourious%20Basterds%20(2009)' \
---header 'Authorization: Token YOUR_AUTH_TOKEN'
+--header 'Authorization: Token <YOUR_AUTH_TOKEN>'
+</pre>
+<pre>
+200 OK
 </pre>
 </details>
 
@@ -449,8 +458,9 @@ Response: Status 200
 <details><summary>Sample</summary>
 <pre>
 curl --location --request DELETE 'localhost:9090/movie/truncate/' \
---header 'Authorization: Token YOUR_AUTH_TOKEN'
-
+--header 'Authorization: Token <YOUR_AUTH_TOKEN>'
+</pre>
+<pre>
 200 OK
 </pre>
 </details>
@@ -483,7 +493,7 @@ Response: Status 201
 <details><summary>Sample</summary>
 <pre>
 curl --location --request POST 'localhost:9090/category/new/' \
---header 'Authorization: Token YOUR_AUTH_TOKEN' \
+--header 'Authorization: Token <YOUR_AUTH_TOKEN>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "name": "English Movies",
@@ -495,7 +505,8 @@ curl --location --request POST 'localhost:9090/category/new/' \
         }
     ]
 }'
-
+</pre>
+<pre>
 201 Created
 </pre>
 </details>
@@ -536,7 +547,8 @@ Response:
 <details><summary>Sample</summary>
 <pre>
 curl --location --request GET 'localhost:9090/category/all/'
-
+</pre>
+<pre>
 [
     {
         "id": 1,
@@ -586,7 +598,8 @@ Response:
 <details><summary>Sample</summary>
 <pre>
 curl --location --request GET 'localhost:9090/category/retrieve/?id=1'
-
+</pre>
+<pre>
 {
     "id": 1,
     "name": "English Movies",
@@ -625,8 +638,9 @@ Response: Status 200
 <details><summary>Sample</summary>
 <pre>
 curl --location --request PUT 'localhost:9090/category/sync/?id=1' \
---header 'Authorization: Token YOUR_AUTH_TOKEN'
-
+--header 'Authorization: Token <YOUR_AUTH_TOKEN>'
+</pre>
+<pre>
 200 OK
 </pre>
 </details>
@@ -651,8 +665,9 @@ Response: Status 200
 <details><summary>Sample</summary>
 <pre>
 curl --location --request PUT 'localhost:9090/category/clear/?id=1' \
---header 'Authorization: Token YOUR_AUTH_TOKEN'
-
+--header 'Authorization: Token <YOUR_AUTH_TOKEN>'
+</pre>
+<pre>
 200 OK
 </pre>
 </details>
@@ -673,7 +688,7 @@ Response: Status 200
 <details><summary>Sample</summary>
 <pre>
 curl --location --request POST 'localhost:9090/category/new/' \
---header 'Authorization: Token YOUR_AUTH_TOKEN' \
+--header 'Authorization: Token <YOUR_AUTH_TOKEN>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
 	"id": "1"
@@ -687,6 +702,7 @@ curl --location --request POST 'localhost:9090/category/new/' \
         }
     ]
 }'
-
+</pre>
+<pre>
 200 OK
 </pre></details>
