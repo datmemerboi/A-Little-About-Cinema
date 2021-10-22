@@ -4,12 +4,10 @@ Two modules in ALAC
 - [Movie](#Movie)
 - [Category](#Category)
 
-#### Index / Health
-Endpoint: `/`
+### Index / Health
+```GET /```
 
-Method: GET
-
-Response:
+#### Response
 ```
 {
 	healthy:		Boolean,
@@ -43,17 +41,29 @@ curl --location --request GET 'localhost:9090'
 </details>
 
 ## Movie
-#### Create Movie
+### Create Movie
+```POST /movie/new/```
 
-Endpoint: `/movie/new/`
+#### Headers
+<table>
+  <thead>
+    <tr>
+      <th>Header</th>
+      <th>Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authorization</td>
+      <td>Token</td>
+      <td>the Django user OAuth token created locally</td>
+    </tr>
+  </tbody>
+</table>
 
-Method: POST
-
-Headers:
-- Authorization: Token
-  - Django user OAuth token
-
-Request Body:
+#### Request Body
+Required fields: **title**, **director**, **year**, **language**
 ```
 {
 	title*:			String,
@@ -68,7 +78,8 @@ Request Body:
 	keywords:		[ String ]
 }
 ```
-Response: Status 201
+#### Response
+**Status 201** Created
 
 <details><summary>Sample</summary>
 <pre>
@@ -100,17 +111,28 @@ curl --location --request POST 'localhost:9090/movie/new/' \
 </pre>
 </details>
 
-#### Create Multiple Movies
+### Create Multiple Movies
+```POST /movie/new/```
 
-Endpoint: `/movie/new/`
+#### Headers
+<table>
+  <thead>
+    <tr>
+      <th>Header</th>
+      <th>Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authorization</td>
+      <td>Token</td>
+      <td>the Django user OAuth token created locally</td>
+    </tr>
+  </tbody>
+</table>
 
-Method: POST
-
-Headers:
-- Authorization: Token
-  - Django user OAuth token
-
-Request Body:
+#### Request Body
 ```
 {
 	records*: [{
@@ -127,7 +149,9 @@ Request Body:
 	}]
 }
 ```
-Response: Status 201
+
+#### Response
+**Status 201** Created
 
 <details><summary>Sample</summary>
 <pre>
@@ -163,20 +187,36 @@ curl --location --request POST 'localhost:9090/movie/new/' \
 </pre>
 </details>
 
-#### List Movies
-Endpoint: `/movie/all/`
+### List Movies
+```GET /movie/all/```
 
-Method: GET
+#### Query Parameters
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Data Type</th>
+      <th>Description</th>
+      <th>Default value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>quick</td>
+      <td>Boolean</td>
+      <td>Returns a concise list of objects instead of the entire movie object</td>
+      <td><code>false</code></td>
+    </tr>
+    <tr>
+      <td>limit</td>
+      <td>Number</td>
+      <td>To limit the number of records returned</td>
+      <td><code>null</code></td>
+    </tr>
+  </tbody>
+</table>
 
-Parameters:
-- quick
-  - datatype: Boolean
-  - Returns a concise list of objects instead of the entire movie object
-- limit
-  - datatype: Number
-  - To limit the number of records returned
-
-Response:
+#### Response
 ```
 [{
 	title:			String,
@@ -227,18 +267,30 @@ curl --location --request GET 'localhost:9090/movie/all/'
 </pre>
 </details>
 
-#### Retrieve Single Movie
-Endpoint: `/movie/retrieve/`
+### Retrieve Single Movie
+```GET /movie/retrieve/```
 
-Method: GET
+#### Query Parameters
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Data Type</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>id</td>
+      <td>String</td>
+      <td>ID of the movie to retrieve</td>
+      <td><code>true</code></td>
+    </tr>
+  </tbody>
+</table>
 
-Parameters:
-- **id**
-  - datatype: String
-  - required parameter
-  - ID of the movie to retrieve
-
-Response:
+#### Response
 ```
 {
 	title:			String,
@@ -288,19 +340,18 @@ curl --location --request GET 'localhost:9090/movie/retrieve/?id=Inglourious%20B
 </pre>
 </details>
 
-#### Retrieve Multiple Movies
-Endpoint: `/movie/retrieve/`
+### Retrieve Multiple Movies
+```POST /movie/retrieve/```
 
-Method: POST
-
-Request Body:
+#### Request Body
+Required fields: **id**
 ```
 {
 
 	id*:			[ String ]
 }
 ```
-Response:
+#### Response
 ```
 [{
 	title:			String,
@@ -358,16 +409,28 @@ curl --location --request POST 'localhost:9090/movie/retrieve/' \
 </pre>
 </details>
 
-#### Update Movie
-Endpoint: `/movie/update/`
+### Update Movie
+```PUT /movie/update/```
 
-Method: PUT
+#### Headers
+<table>
+  <thead>
+    <tr>
+      <th>Header</th>
+      <th>Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authorization</td>
+      <td>Token</td>
+      <td>the Django user OAuth token created locally</td>
+    </tr>
+  </tbody>
+</table>
 
-Headers:
-- Authorization: Token
-  - Django user OAuth token
-
-Request Body:
+#### Request Body
 ```
 {
 	id*:			String
@@ -383,7 +446,8 @@ Request Body:
 	keywords:		[ String ]
 }
 ```
-Response: Status 200
+#### Response
+**Status 200**
 
 <details><summary>Sample</summary>
 <pre>
@@ -417,22 +481,48 @@ curl --location --request PUT 'localhost:9090/movie/update/' \
 </pre>
 </details>
 
-#### Delete Movie
-Endpoint: `/movie/delete/`
+### Delete Movie
+```DELETE /movie/delete/```
+#### Headers
+<table>
+  <thead>
+    <tr>
+      <th>Header</th>
+      <th>Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authorization</td>
+      <td>Token</td>
+      <td>the Django user OAuth token created locally</td>
+    </tr>
+  </tbody>
+</table>
 
-Method: DELETE
+#### Query Parameters
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Data Type</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>id</td>
+      <td>String</td>
+      <td>ID of the movie to delete</td>
+      <td><code>true</code></td>
+    </tr>
+  </tbody>
+</table>
 
-Headers:
-- Authorization: Token
-  - Django user OAuth token
-
-Parameters:
-- **id**
-  - datatype: String
-  - required parameter
-  - ID of movie record to delete
-
-Response: Status 200
+#### Response
+**Status 200**
 
 <details><summary>Sample</summary>
 <pre>
@@ -444,16 +534,29 @@ curl --location --request DELETE 'localhost:9090/movie/delete/?id=Inglourious%20
 </pre>
 </details>
 
-#### Truncate Movies
-Endpoint: `/movie/truncate/`
+### Truncate Movies
+```DELETE /movie/truncate/```
 
-Method: DELETE
+#### Headers
+<table>
+  <thead>
+    <tr>
+      <th>Header</th>
+      <th>Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authorization</td>
+      <td>Token</td>
+      <td>the Django user OAuth token created locally</td>
+    </tr>
+  </tbody>
+</table>
 
-Headers:
-- Authorization: Token
-  - Django user OAuth token
-
-Response: Status 200
+#### Response
+**Status 200**
 
 <details><summary>Sample</summary>
 <pre>
@@ -466,16 +569,28 @@ curl --location --request DELETE 'localhost:9090/movie/truncate/' \
 </details>
 
 ## Category
-#### Create Category
-Endpoint: `/category/new/`
+### Create Category
+```POST /category/new/```
 
-Method: POST
+#### Headers
+<table>
+  <thead>
+    <tr>
+      <th>Header</th>
+      <th>Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authorization</td>
+      <td>Token</td>
+      <td>the Django user OAuth token created locally</td>
+    </tr>
+  </tbody>
+</table>
 
-Headers:
-- Authorization: Token
-  - Django user OAuth token
-
-Request Body:
+#### Request Body
 ```
 {
 	name:			String,
@@ -488,7 +603,8 @@ Request Body:
 	movie_list:		[ String ]
 }
 ```
-Response: Status 201
+#### Response
+**Status 201**
 
 <details><summary>Sample</summary>
 <pre>
@@ -511,23 +627,36 @@ curl --location --request POST 'localhost:9090/category/new/' \
 </pre>
 </details>
 
-#### List Categories
-Endpoint: `/category/all/`
+### List Categories
+```GET/category/all/```
 
-Method: GET
+#### Query Parameters
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Data Type</th>
+      <th>Description</th>
+      <th>Default value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>quick</td>
+      <td>Boolean</td>
+      <td>Returns a concise list of objects instead of the entire category object</td>
+      <td><code>false</code></td>
+    </tr>
+    <tr>
+      <td>limit</td>
+      <td>Number</td>
+      <td>To limit the number of records returned</td>
+      <td><code>null</code></td>
+    </tr>
+  </tbody>
+</table>
 
-Parameters:
-- quick
-  - datatype: Boolean
-  - Returns a concise list of objects instead of the entire category object
-- meta
-  - datatype: Boolean
-  - Returns the meta data of the category object
-- limit
-  - datatype: Number
-  - To limit the number of records returned
-
-Response:
+#### Response
 ```
 [{
 	id:				Number
@@ -569,18 +698,30 @@ curl --location --request GET 'localhost:9090/category/all/'
 </pre>
 </details>
 
-#### Retrieve Category
-Endpoint: `/category/retrieve/`
+### Retrieve Category
+```GET /category/retrieve/```
 
-Method: GET
+#### Query Parameter
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Data Type</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>id</td>
+      <td>Number</td>
+      <td>ID of the category to retrieve</td>
+      <td><code>true</code></td>
+    </tr>
+  </tbody>
+</table>
 
-Parameters:
-- **id**
-  - datatype: Number
-  - required parameter
-  - ID of the category to retrieve
-
-Response:
+#### Response
 ```
 {
 	id:				Number
@@ -618,22 +759,48 @@ curl --location --request GET 'localhost:9090/category/retrieve/?id=1'
 </pre>
 </details>
 
-#### Sync Category
-Endpoint: `/cateogry/sync/`
+### Sync Category
+```PUT /cateogry/sync/```
+#### Headers
+<table>
+  <thead>
+    <tr>
+      <th>Header</th>
+      <th>Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authorization</td>
+      <td>Token</td>
+      <td>the Django user OAuth token created locally</td>
+    </tr>
+  </tbody>
+</table>
 
-Method: PUT
+#### Query Parameters
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Data Type</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>id</td>
+      <td>Number</td>
+      <td>ID of the category to sync</td>
+      <td><code>true</code></td>
+    </tr>
+  </tbody>
+</table>
 
-Headers:
-- Authorization: Token
-  - Django user OAuth token
-
-Parameters:
-- **id**
-  - datatype: Number
-  - required parameter
-  - ID of the category to sync
-
-Response: Status 200
+#### Response
+**Status 200**
 
 <details><summary>Sample</summary>
 <pre>
@@ -645,22 +812,48 @@ curl --location --request PUT 'localhost:9090/category/sync/?id=1' \
 </pre>
 </details>
 
-#### Clear Category List
-Endpoint: `/category/clear/`
+### Clear Category List
+```PUT /category/clear/```
+#### Headers
+<table>
+  <thead>
+    <tr>
+      <th>Header</th>
+      <th>Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authorization</td>
+      <td>Token</td>
+      <td>the Django user OAuth token created locally</td>
+    </tr>
+  </tbody>
+</table>
 
-Method: PUT
+#### Query Parameters
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Data Type</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>id</td>
+      <td>Number</td>
+      <td>ID of the category to clear list</td>
+      <td><code>true</code></td>
+    </tr>
+  </tbody>
+</table>
 
-Headers:
-- Authorization: Token
-  - Django user OAuth token
-
-Parameters:
-- **id**
-  - datatype: Number
-  - required parameter
-  - ID of the category to clear list
-
-Response: Status 200
+#### Response
+**Status 200**
 
 <details><summary>Sample</summary>
 <pre>
@@ -672,18 +865,17 @@ curl --location --request PUT 'localhost:9090/category/clear/?id=1' \
 </pre>
 </details>
 
-#### Edit Category
-Endpoint: `/category/edit/`
+### Edit Category
+```PUT /category/edit/```
 
-Method: PUT
-
-Request Body:
+#### Request Body
 ```
 {
 	id*:			Number
 }
 ```
-Response: Status 200
+#### Response
+**Status 200**
 
 <details><summary>Sample</summary>
 <pre>
