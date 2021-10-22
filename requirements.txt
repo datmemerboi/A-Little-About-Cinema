@@ -2,14 +2,14 @@ asgiref==3.3.4
 certifi==2020.6.20
 chardet==3.0.4
 dj-database-url==0.5.0
-Django==3.1.8
-djangorestframework==3.12.1
-gunicorn==20.0.4
+Django==3.2.8
+djangorestframework==3.12.4
+gunicorn==20.1.0
 idna==2.10
 Markdown==3.2.2
 psycopg2-binary==2.8.5
-python-decouple==3.3
+python-decouple==3.5
 pytz==2020.1
 requests==2.24.0
-sqlparse==0.3.1
-urllib3==1.25.9
+sql arse==0.3.1
+urllib3==1.26.7
